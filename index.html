@@ -1,0 +1,703 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>
+    UniCATS
+  </title>
+
+  <!-- bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <!-- icon -->
+  <script src="https://kit.fontawesome.com/87dc3e863a.js" crossorigin="anonymous"></script>
+  <!-- font -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+  <style>
+    body {
+      background: rgb(255, 255, 255) no-repeat fixed top left;
+      font-family:'Open Sans', sans-serif;
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- cover -->
+  <section>
+    <div class="jumbotron text-center mt-0" style="padding-bottom: 0px;">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col">
+            <!-- paper title -->
+            <h2 style="font-size:30px;">
+                UniCATS: A Unified Context-Aware Text-to-Speech Framework with <br> Contextual VQ-Diffusion and Vocoding
+            </h2>
+
+            <hr>
+            
+            <!-- authors -->
+            <h6>Chenpeng Du<sup>1</sup>,
+            Yiwei Guo<sup>1</sup>,
+			Feiyu Shen<sup>1</sup>,
+			Zhijun Liu<sup>1</sup>,
+			Zheng Liang<sup>1</sup>,
+			Xie Chen<sup>1</sup>,
+			Shuai Wang<sup>2</sup>,
+			Hui Zhang<sup>3</sup>,
+			Kai Yu<sup>1</sup>
+                 <br>
+                 <br>
+             <p> <sup>1</sup> X-LANCE Lab, Department of Computer Science and Engineering, Shanghai Jiao Tong University, Shanghai, China <br>
+                <sup>2</sup> Shenzhen Research Institute of Big Data, Shenzhen, China <br>
+                <sup>3</sup> AISpeech Ltd, Beijing, China <br>
+
+            </p>
+
+            
+            <!-- links -->
+            <div class="row justify-content-center">
+              <!-- link to paper -->
+              <div style="margin: 5px;">
+                <p class="mb-5"><a class="btn btn-large btn-dark" href="https://arxiv.org/abs/xxxx.xxxxx" role="button" target="_blank">
+                <i class="fa fa-file"></i>
+                Paper
+                </a> </p>
+              </div>
+			  <!-- <div style="margin: 5px;"> -->
+                <!-- <p class="mb-5"><a class="btn btn-large btn-dark" href="https://github.com/cpdu/unicats" role="button" target="_blank"> -->
+                <!-- <i class="fa fa-file"></i> -->
+                <!-- Code -->
+                <!-- </a> </p> -->
+              <!-- </div> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- abstract -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3>Abstract</h3>
+          <hr style="margin-top:0px">
+        </div>
+          <p class="text-justify">
+            The utilization of discrete speech tokens, divided into semantic tokens and acoustic tokens, has been proven superior to traditional acoustic feature mel-spectrograms in terms of naturalness and robustness for text-to-speech (TTS) synthesis. Recent popular models, such as VALL-E and SPEAR-TTS, allow zero-shot speaker adaptation through auto-regressive (AR) continuation of acoustic tokens extracted from a short speech prompt. 
+However, these AR models are restricted to generate speech only in a left-to-right direction, making them unsuitable for speech editing where both preceding and subsequent contexts are provided. Furthermore, these models rely on acoustic tokens, which have audio quality limitations imposed by the performance of audio codec models.
+In this study, we propose a unified context-aware TTS framework called UniCATS, which is capable of both speech continuation and editing. UniCATS comprises two components, an acoustic model CTX-txt2vec and a vocoder CTX-vec2wav. 
+CTX-txt2vec employs contextual VQ-diffusion to predict semantic tokens from the input text, enabling it to incorporate the semantic context and maintain seamless concatenation with the surrounding context. Following that, CTX-vec2wav utilizes contextual vocoding to convert these semantic tokens into waveforms, taking into consideration the acoustic context.
+Our experimental results demonstrate that CTX-vec2wav outperforms HifiGAN and AudioLM in terms of speech resynthesis from semantic tokens. Moreover, we show that UniCATS achieves state-of-the-art performance in both speech continuation and editing.
+           </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  <br>
+  <br>
+
+
+  <!-- demo -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3>Speech Resynthesis from Semantic Tokens</h3>
+          <hr style="margin-top:0px">
+        </div>
+        
+		<table class="table">
+			<tr><td scope="col" colspan="3">[1089_134686_000026_000003] A gentle kick from the tall boy in the bench behind urged Stephen to ask a difficult question. </td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">Encodec</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/gt/1089_134686_000026_000003.wav" controls=""></audio></td>
+				<td><audio src="./resources/encodec/1089_134686_000026_000003.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">HifiGAN</td>
+				<td align="center">AudioLM</td>
+				<td align="center">CTX-vec2wav</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/hifigan/1089_134686_000026_000003.wav" controls=""></audio></td>
+				<td><audio src="./resources/audiolm/1089_134686_000026_000003.wav" controls=""></audio></td>
+				<td><audio src="./resources/v2w/1089_134686_000026_000003.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+            <tr><td scope="col" colspan="3">[1580_141083_000015_000000] For an instant I imagined that Bannister had taken the unpardonable liberty of examining my papers.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">Encodec</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/gt/1580_141083_000015_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/encodec/1580_141083_000015_000000.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">HifiGAN</td>
+				<td align="center">AudioLM</td>
+				<td align="center">CTX-vec2wav</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/hifigan/1580_141083_000015_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/audiolm/1580_141083_000015_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/v2w/1580_141083_000015_000000.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+			
+						
+            <tr><td scope="col" colspan="3">[2830_3980_000018_000002] He reminds them of the time when he opposed peter to his face and reproved the chief of the apostles.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">Encodec</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/gt/2830_3980_000018_000002.wav" controls=""></audio></td>
+				<td><audio src="./resources/encodec/2830_3980_000018_000002.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">HifiGAN</td>
+				<td align="center">AudioLM</td>
+				<td align="center">CTX-vec2wav</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/hifigan/2830_3980_000018_000002.wav" controls=""></audio></td>
+				<td><audio src="./resources/audiolm/2830_3980_000018_000002.wav" controls=""></audio></td>
+				<td><audio src="./resources/v2w/2830_3980_000018_000002.wav" controls=""></audio></td>
+			</tr>
+			
+			
+				
+			
+						
+            <tr><td scope="col" colspan="3">[6829_68769_000005_000004] So this boy was doubly foolish in ruining himself to get sixty dollars to pay an unjust demand.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">Encodec</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/gt/6829_68769_000005_000004.wav" controls=""></audio></td>
+				<td><audio src="./resources/encodec/6829_68769_000005_000004.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">HifiGAN</td>
+				<td align="center">AudioLM</td>
+				<td align="center">CTX-vec2wav</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/hifigan/6829_68769_000005_000004.wav" controls=""></audio></td>
+				<td><audio src="./resources/audiolm/6829_68769_000005_000004.wav" controls=""></audio></td>
+				<td><audio src="./resources/v2w/6829_68769_000005_000004.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+			
+				
+			
+						
+            <tr><td scope="col" colspan="3">[8224_274384_000005_000001] He was particularly attentive to the behavior of their preachers, on whom all depended.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">Encodec</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/gt/8224_274384_000005_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/encodec/8224_274384_000005_000001.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">HifiGAN</td>
+				<td align="center">AudioLM</td>
+				<td align="center">CTX-vec2wav</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/hifigan/8224_274384_000005_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/audiolm/8224_274384_000005_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/v2w/8224_274384_000005_000001.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+			
+		</table>
+	
+	    <div class="col-12 text-center">
+          <h3>Speech Continuation for Zero-Shot Speaker Adaptation (Seen)</h3>
+          <hr style="margin-top:0px">
+        </div>
+        
+		<table class="table">
+			<tr><td scope="col" colspan="3">[Prompt: 696_92939_000016_000006] He never informed them that the death sentence had been imposed. <span style="color:#d9986d"> [Continuation: 696_93314_000013_000007] It seemed to him that there were so many more of the same pattern from whom she might have chosen. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/696_92939_000016_000006.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/696_93314_000013_000007.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/696_93314_000013_000007.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/696_93314_000013_000007.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/696_93314_000013_000007.wav" controls=""></audio></td>
+			</tr>
+			
+
+			<tr><td scope="col" colspan="3">[Prompt: 1789_142896_000022_000005] Right after lunch you go to the boss's garage and wait for me. <span style="color:#d9986d"> [Continuation: 1789_142896_000004_000002] You are formal only to the city editor, the managing editor, and the auditor. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/1789_142896_000022_000005.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/1789_142896_000004_000002.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/1789_142896_000004_000002.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/1789_142896_000004_000002.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/1789_142896_000004_000002.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			<tr><td scope="col" colspan="3">[Prompt: 1806_143948_000039_000000] You have, then, limited your efforts to sacred song? <span style="color:#d9986d"> [Continuation: 1806_143946_000010_000004] His language has the richness and sententious fullness of the Chinese. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/1806_143948_000039_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/1806_143946_000010_000004.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/1806_143946_000010_000004.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/1806_143946_000010_000004.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/1806_143946_000010_000004.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			<tr><td scope="col" colspan="3">[Prompt: 5239_31629_000061_000000] Fiery stream contained poisonous gases. <span style="color:#d9986d"> [Continuation: 5239_32139_000017_000001] Think of a stone aqueduct reaching from the city of New York to the State of North Carolina! </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/5239_31629_000061_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/5239_32139_000017_000001.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/5239_32139_000017_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/5239_32139_000017_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/5239_32139_000017_000001.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			<tr><td scope="col" colspan="3">[Prompt: 7933_112597_000010_000001] But the bagpipe was the great favourite of the common people. <span style="color:#d9986d"> [Continuation: 7933_113273_000042_000000] The fate of the others, whose wickedness has been a part of this story, was not so pleasant. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/7933_112597_000010_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/7933_113273_000042_000000.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/7933_113273_000042_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/7933_113273_000042_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/7933_113273_000042_000000.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+			
+		</table>
+		
+		
+		
+		
+		
+		
+		
+		
+		<div class="col-12 text-center">
+          <h3>Speech Continuation for Zero-Shot Speaker Adaptation (Unseen)</h3>
+          <hr style="margin-top:0px">
+        </div>
+        
+		<table class="table">
+
+			
+			<tr><td scope="col" colspan="3">[Prompt: 1995_1837_000020_000000] Up in the sick room Zora lay on the little white bed. <span style="color:#d9986d"> [Continuation: 1995_1836_000003_000002] At last the Cotton Combine was to all appearances an assured fact and he was slated for the Senate. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/1995_1837_000020_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/1995_1836_000003_000002.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/1995_1836_000003_000002.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/1995_1836_000003_000002.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/1995_1836_000003_000002.wav" controls=""></audio></td>
+			</tr>
+			
+						
+			
+			
+			<tr><td scope="col" colspan="3">[Prompt: 2830_3980_000018_000001] Humble man that he was, he will not now take a back seat. <span style="color:#d9986d"> [Continuation: 2830_3980_000018_000000] Against these boasting, false apostles, Paul boldly defends his apostolic authority and ministry. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/2830_3980_000018_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/2830_3980_000018_000000.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/2830_3980_000018_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/2830_3980_000018_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/2830_3980_000018_000000.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+			
+            <tr><td scope="col" colspan="3">[Prompt: 4077_13754_000013_000005] Yet the two have often been confused in the popular mind. <span style="color:#d9986d"> [Continuation: 4077_13754_000003_000005] He was unjustly charged with favoring secession; but the charge was soon disproved. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/4077_13754_000013_000005.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/4077_13754_000003_000005.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/4077_13754_000003_000005.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/4077_13754_000003_000005.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/4077_13754_000003_000005.wav" controls=""></audio></td>
+			</tr>
+									
+			
+			
+			<tr><td scope="col" colspan="3">[Prompt: 6829_68771_000046_000000] A sudden wave of scarlet swept over Eliza's face. <span style="color:#d9986d"> [Continuation: 6829_68769_000030_000000] Then he deliberately locked Kenneth and Beth in with the forger, and retreated along the passage. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/6829_68771_000046_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/6829_68769_000030_000000.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/6829_68769_000030_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/6829_68769_000030_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/6829_68769_000030_000000.wav" controls=""></audio></td>
+			</tr>
+			
+				
+			
+			<tr><td scope="col" colspan="3">[Prompt: 8230_279154_000004_000008] To deal with this problem, we must have a theory of memory. <span style="color:#d9986d"> [Continuation: 8230_279154_000019_000000] The first of our vague but indubitable data is that there is knowledge of the past. </span> </td></tr>
+			<tr>
+				<td align="center">Prompt</td>
+				<td align="center">Ground-truth</td>
+				<td align="center"></td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt/8230_279154_000004_000008.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_gt/8230_279154_000019_000000.wav" controls=""></audio></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td align="center">FastSpeech 2</td>
+				<td align="center">VALL-E</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/prompt_fs2/8230_279154_000019_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_valle/8230_279154_000019_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/prompt_unicats/8230_279154_000019_000000.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+			
+		</table>
+		
+		
+		
+		
+		
+		
+		
+		<div class="col-12 text-center">
+          <h3>Speech Editing (An example)</h3>
+          <hr style="margin-top:0px">
+        </div>
+        
+		<table class="table">
+
+
+			<tr><td scope="col" colspan="2"> In a few moments he heard <span style="color:#2e75b6"> the cherries dropping smartly into the pail,</span> and he began to swing his scythe.  </td> <td><audio src="./resources/edit_example/237_134500_000008_000001_org.wav" controls=""></audio></td> </tr>
+			<tr><td scope="col" colspan="2"> In a few moments he heard <span style="color:#d9986d"> the rhythmic swishing sound of the wind,</span> and he began to swing his scythe.  </td>  <td><audio src="./resources/edit_example/237_134500_000008_000001_edited.wav" controls=""></audio></td></tr>
+
+
+		</table>
+
+
+
+
+
+
+
+		<div class="col-12 text-center">
+          <h3>Speech Editing (Short)</h3>
+          <hr style="margin-top:0px">
+        </div>
+
+		<table class="table">
+
+			
+			
+
+            <tr><td scope="col" colspan="3"> [1995_1826_000016_000010] Miss Taylor was <span style="color:#d9986d">soon starving for</span> human companionship, for the lighter touches of life and some of its warmth and laughter.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">RetrieverTTS</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/edit_gt/1995_1826_000016_000010.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_retrievertts_short/1995_1826_000016_000010.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_unicats_short/1995_1826_000016_000010.wav" controls=""></audio></td>
+			</tr>
+			
+			
+            <tr><td scope="col" colspan="3"> [4970_29095_000056_000000] Ruth was glad to hear that Philip had made a push <span style="color:#d9986d">into the</span> world, and she was sure that his talent and courage would make a way for him. She should pray for his success at any rate, and especially that the Indians, in St. Louis, would not take his scalp.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">RetrieverTTS</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/edit_gt/4970_29095_000056_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_retrievertts_short/4970_29095_000056_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_unicats_short/4970_29095_000056_000000.wav" controls=""></audio></td>
+			</tr>
+			
+						
+						
+            <tr><td scope="col" colspan="3"> [7176_92135_000006_000007] "My dear Sir," I should <span style="color:#d9986d">reply</span> (or Madam), "you have come to the right shop."</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">RetrieverTTS</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/edit_gt/7176_92135_000006_000007.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_retrievertts_short/7176_92135_000006_000007.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_unicats_short/7176_92135_000006_000007.wav" controls=""></audio></td>
+			</tr>
+			
+						
+
+		</table>
+
+
+
+
+
+
+
+		<div class="col-12 text-center">
+          <h3>Speech Editing (Long)</h3>
+          <hr style="margin-top:0px">
+        </div>
+
+		<table class="table">
+
+
+
+			<tr><td scope="col" colspan="3"> [8463_294828_000014_000001] I wanted nothing more than to see my country again, my friends, my modest quarters <span style="color:#d9986d"> by the Botanical Gardens, my dearly</span> beloved collections!</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">RetrieverTTS</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/edit_gt/8463_294828_000014_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_retrievertts_long/8463_294828_000014_000001.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_unicats_long/8463_294828_000014_000001.wav" controls=""></audio></td>
+			</tr>
+			
+			
+			
+			
+			
+			<tr><td scope="col" colspan="3"> [6829_68769_000009_000000] If the prosecution were withdrawn and the case <span style="color:#d9986d"> settled with the victim of the forged check</span>, then the young man would be allowed his freedom. But under the circumstances I doubt if such an arrangement could be made.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">RetrieverTTS</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/edit_gt/6829_68769_000009_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_retrievertts_long/6829_68769_000009_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_unicats_long/6829_68769_000009_000000.wav" controls=""></audio></td>
+			</tr>
+						
+			
+						
+			
+			<tr><td scope="col" colspan="3"> [8455_210777_000003_000000] I remained there alone for many <span style="color:#d9986d"> hours, but I must acknowledge that before I left </span> the chambers I had gradually brought myself to look at the matter in another light.</td></tr>
+			<tr>
+				<td align="center">Ground-truth</td>
+				<td align="center">RetrieverTTS</td>
+				<td align="center">UniCATS</td>
+			</tr>
+			<tr>
+				<td><audio src="./resources/edit_gt/8455_210777_000003_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_retrievertts_long/8455_210777_000003_000000.wav" controls=""></audio></td>
+				<td><audio src="./resources/edit_unicats_long/8455_210777_000003_000000.wav" controls=""></audio></td>
+			</tr>
+						
+			
+			
+		</table>
+		
+		
+		
+      </div>
+    </div>
+  </section>
+
+  <!-- abstract -->
+  <section>
+    <div class="container">
+      <div class="row">
+        <div class="col-12 text-center">
+          <h3></h3>
+          <hr style="margin-top:0px">
+        </div>
+          <p class="text-justify">
+			Note: The utterance list for both test sets A and B, along with their corresponding prompts, is available here. [<a href="./resources/testsetA_utt2prompt">Test set A</a>] [<a href="./resources/testsetB_utt2prompt">Test set B</a>]
+		  </p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  
+
+  
+  <!-- citing -->
+  <div class="container">
+    <div class="row ">
+      <div class="col-12">
+        <h3>Citation</h3>
+        <hr style="margin-top:0px">
+        <pre style="background-color: #e9eeef;padding: 1.25em 1.5em">
+<code>@article{du2023unicats,
+  title={UniCATS: A Unified Context-Aware Text-to-Speech Framework with Contextual VQ-Diffusion and Vocoding},
+  author={Du, Chenpeng and Guo, Yiwei and Shen, Feiyu and Liu, Zhijun and Liang, Zheng and Wang, Shuai and Zhang, Hui and Chen, Xie and Yu, Kai},
+  journal={arXiv preprint arXiv:xxxx.xxxxx},
+  year={2023}
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+
+</body>
+</html>
